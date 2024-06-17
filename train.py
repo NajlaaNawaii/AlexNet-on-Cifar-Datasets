@@ -29,12 +29,16 @@ class CIFAR10Trainer:
     def mixup_criterion(self, y_a, y_b, lam):
         return lambda criterion, pred: lam * criterion(pred, y_a) + (1 - lam) * criterion(pred, y_b)
     
-    def train(self, model, train_loader, optimizer, criterion, scheduler=None):
+    def train(self, model, train_loader,valid_loader, optimizer, criterion, scheduler=None):
         model.to(self.device)
         model.train()
         
         ema_train_loss = None
+        ema_valid_loss =None
         train_loss = []
+        valid_loss = []
+        correct = 0
+        total = 0
         print("------Training--------")
         for epoch in range(self.num_epochs):
             
@@ -51,47 +55,44 @@ class CIFAR10Trainer:
                 loss.backward()
                 optimizer.step()
 
+                # Update exponential moving average of the training loss.
                 if ema_train_loss is None:
                     ema_train_loss = loss.item()
                 else:
-                    ema_train_loss = 0.9 * ema_train_loss + 0.1 * loss.item()
-                    
-                if i % 100 == 0:
-                    train_loss.append(ema_train_loss)
-                    print(f"Epoch: {epoch+1}/{self.num_epochs}, Step: {i+1}/{len(train_loader)}, Loss: {ema_train_loss:.4f}")
-            
+                    ema_train_loss += (loss.item() - ema_train_loss) * 0.01
+                train_loss.append(ema_train_loss)
+                            
+            print(f"Epoch: {epoch+1}/{self.num_epochs}, Step: {i+1}/{len(train_loader)}, Train_loss: {ema_train_loss:.4f}")
             if scheduler is not None:
                 scheduler.step()
         
-        return train_loss
+        
     
-    def validate(self, model, valid_loader, criterion):
-        model.to(self.device)
-        model.eval()
-        
-        valid_loss = 0.0
-        correct = 0
-        total = 0
-        
-        with torch.no_grad():
-            for images, labels in valid_loader:
-                images = images.to(self.device)
-                labels = labels.to(self.device)
+    
+            model.eval()    
+            with torch.no_grad():
+                for images, labels in valid_loader:
+                    images = images.to(self.device)
+                    labels = labels.to(self.device)
 
-                outputs = model(images)
-                loss = criterion(outputs, labels)
+                    outputs = model(images)
+                    loss = criterion(outputs, labels)
 
-                valid_loss += loss.item()
-                _, predicted = torch.max(outputs.data, 1)
-                total += labels.size(0)
-                correct += (predicted == labels).sum().item()
+                    if ema_valid_loss is None:
+                        ema_valid_loss = loss.item()
+                    else:
+                        ema_valid_loss += (loss.item() - ema_valid_loss) * 0.01
+                    valid_loss.append(ema_valid_loss)
 
-        accuracy = correct / total
-        valid_loss /= len(valid_loader)
+                    _, predicted = torch.max(outputs.data, 1)
+                    total += labels.size(0)
+                    correct += (predicted == labels).sum().item()
+
+            accuracy = correct / total
+            print(f"Validation Loss: {ema_valid_loss:.4f}, Accuracy: {accuracy:.4f}")
         
-        print(f"Validation Loss: {valid_loss:.4f}, Accuracy: {accuracy:.4f}")
-        
-        return valid_loss, accuracy
+        return train_loss , valid_loss
+    
     
     def test(self, model, test_loader, criterion):
         model.to(self.device)
@@ -119,4 +120,4 @@ class CIFAR10Trainer:
         
         print(f"Test Loss: {test_loss:.4f}, Accuracy: {accuracy:.4f}")
         
-        return test_loss, accuracy
+        return

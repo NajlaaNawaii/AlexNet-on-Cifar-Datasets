@@ -5,9 +5,9 @@ from torchvision import datasets, transforms # type: ignore
 import torch.nn as nn # type: ignore
 import matplotlib.pyplot as plt
 
-from base_model import AlexNet_mixup
-from data_loaders import CIFAR10DataLoader
-from Trainer import CIFAR10Trainer
+from model import AlexNet_mixup
+from data import CIFAR10DataLoader
+from train import CIFAR10Trainer
 
 data_loader = CIFAR10DataLoader(
     data_dir='./data',
@@ -21,7 +21,7 @@ train_loader, valid_loader = data_loader.train_loader, data_loader.valid_loader
 test_loader = data_loader.test_loader
 
 num_classes = 10
-num_epochs = 30
+num_epochs = 1
 batch_size = 64
 augment = True
 mixup_alpha = 0.4
@@ -45,12 +45,14 @@ total_step = len(train_loader)
 trainer = CIFAR10Trainer(batch_size, augment, mixup_alpha, num_epochs)
 def main():
     # Train the model
-    train_loss = trainer.train(model_1, train_loader, optimizer, criterion)
+    train_loss , valid_loss = trainer.train(model_1, train_loader,valid_loader, optimizer, criterion)
+    trainer.test(model_1,test_loader,criterion)
     # Plotting the training and validation loss
-    plt.plot(train_loss, label='Train Loss')
+    plt.plot(train_loss, label='Train loss')
+    plt.plot(valid_loss, label='Val loss')
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
-    plt.title('Training Loss')
+    plt.title('Train and Validation Losses')
     plt.legend()
     plt.show()
 
