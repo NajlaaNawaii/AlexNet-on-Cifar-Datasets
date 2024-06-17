@@ -1,2 +1,2 @@
 # AlexNet-on-Cifar-Datasets
-jnfjhvjhss
+We train AlexNet from scratch on CIFAR-10 and CIFAR-100 . Then, train the same network using Mixup, CutMix, and Cutout as data augmentation approaches and examine their effect on the classifier.

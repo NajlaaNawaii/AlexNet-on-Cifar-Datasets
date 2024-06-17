@@ -1,7 +1,7 @@
 import numpy as np # type: ignore
 import torch # type: ignore
 from torch.utils.data.sampler import SubsetRandomSampler # type: ignore
-from torchvision import datasets, transforms # type: ignore
+from torchvision import datasets, transforms # type: ignore library
 
 
 class CIFAR10DataLoader:
