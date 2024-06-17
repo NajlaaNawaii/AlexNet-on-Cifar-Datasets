@@ -21,7 +21,7 @@ train_loader, valid_loader = data_loader.train_loader, data_loader.valid_loader
 test_loader = data_loader.test_loader
 
 num_classes = 10
-num_epochs = 1
+num_epochs = 30
 batch_size = 64
 augment = True
 mixup_alpha = 0.4
