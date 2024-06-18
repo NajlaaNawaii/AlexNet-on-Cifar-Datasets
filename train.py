@@ -12,8 +12,12 @@ class CIFAR10Trainer:
         self.mixup_alpha = mixup_alpha
         self.num_epochs = num_epochs
         
-        #self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        self.device = torch.device("mps")
+
+        if torch.cuda.is_available():
+            self.device = "cuda"
+        else:
+            self.device = torch.device("mps")
+    
     def mixup_augmentation(self, x, y, alpha):
         if alpha > 0:
             lam = np.random.beta(alpha, alpha)

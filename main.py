@@ -25,14 +25,18 @@ train_loader, valid_loader = data_loader.train_loader, data_loader.valid_loader
 test_loader = data_loader.test_loader
 
 num_classes = 10 if type == "10" else 100
-num_epochs = 50
+num_epochs = 2
 batch_size = 64
 augment = True
 mixup_alpha = 0.4
 learning_rate = 0.01
 
-# device = "cuda" if torch.cuda.is_available() else "cpu"
-device = torch.device("mps")
+if torch.cuda.is_available():
+    device = "cuda"
+else:
+    device = torch.device("mps")
+
+
 model_1 = AlexNet(num_classes).to(device)
 
 
