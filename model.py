@@ -7,9 +7,9 @@ from torchvision import transforms # type: ignore
 from torch.utils.data.sampler import SubsetRandomSampler # type: ignore
 
 
-class AlexNet_mixup(nn.Module):
+class AlexNet(nn.Module):
     def __init__(self, num_classes=10):
-        super(AlexNet_mixup, self).__init__()
+        super(AlexNet, self).__init__()
         self.layer1 = nn.Sequential(
             nn.Conv2d(3, 96, kernel_size=11, stride=4, padding=0),
             nn.ReLU(inplace=True),

@@ -5,11 +5,15 @@ from torchvision import datasets, transforms # type: ignore
 import torch.nn as nn # type: ignore
 import matplotlib.pyplot as plt
 
-from model import AlexNet_mixup
-from data import CIFAR10DataLoader
+from model import AlexNet
+from data import DataLoader
 from train import CIFAR10Trainer
 
-data_loader = CIFAR10DataLoader(
+print("Choose the type data to be used?")
+type = input(" 10 for CIFAR10 or 100 for CIFAR100  ")
+
+data_loader = DataLoader(
+    Cifar_type =type,
     data_dir='./data',
     batch_size=64,
     augment=False,
@@ -20,15 +24,16 @@ data_loader = CIFAR10DataLoader(
 train_loader, valid_loader = data_loader.train_loader, data_loader.valid_loader
 test_loader = data_loader.test_loader
 
-num_classes = 10
-num_epochs = 30
+num_classes = 10 if type == "10" else 100
+num_epochs = 50
 batch_size = 64
 augment = True
 mixup_alpha = 0.4
 learning_rate = 0.01
 
+# device = "cuda" if torch.cuda.is_available() else "cpu"
 device = torch.device("mps")
-model_1 = AlexNet_mixup(num_classes).to(device)
+model_1 = AlexNet(num_classes).to(device)
 
 
 # Loss and optimizer
@@ -45,14 +50,30 @@ total_step = len(train_loader)
 trainer = CIFAR10Trainer(batch_size, augment, mixup_alpha, num_epochs)
 def main():
     # Train the model
-    train_loss , valid_loss = trainer.train(model_1, train_loader,valid_loader, optimizer, criterion)
+    train_loss,train_acc,valid_loss,valid_acc = trainer.train(model_1, train_loader,valid_loader, optimizer, criterion)
+    # train_loss,train_acc = trainer.train(model_1, train_loader,valid_loader, optimizer, criterion)
+
     trainer.test(model_1,test_loader,criterion)
+    print(" ")
+    print(" ")
     # Plotting the training and validation loss
     plt.plot(train_loss, label='Train loss')
     plt.plot(valid_loss, label='Val loss')
     plt.xlabel('Epochs')
     plt.ylabel('Loss')
     plt.title('Train and Validation Losses')
+    plt.legend()
+    plt.show()
+    
+    print(" ")
+    print(" ")
+
+    # Plotting the training and validation loss
+    plt.plot(train_acc, label='Train Acc')
+    plt.plot(valid_acc, label='Val Acc')
+    plt.xlabel('Epochs')
+    plt.ylabel('Accuracy')
+    plt.title('Train and Validation Accuracies')
     plt.legend()
     plt.show()
 

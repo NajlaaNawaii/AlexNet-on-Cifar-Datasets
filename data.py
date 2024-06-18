@@ -4,8 +4,9 @@ from torch.utils.data.sampler import SubsetRandomSampler # type: ignore
 from torchvision import datasets, transforms # type: ignore library
 
 
-class CIFAR10DataLoader:
-    def __init__(self, data_dir, batch_size, augment, random_seed, valid_size=0.1, shuffle=True):
+class DataLoader:
+    def __init__(self, Cifar_type,data_dir, batch_size, augment, random_seed, valid_size=0.1, shuffle=True):
+        self.Cifar_type = Cifar_type
         self.data_dir = data_dir
         self.batch_size = batch_size
         self.augment = augment
@@ -54,10 +55,18 @@ class CIFAR10DataLoader:
         ])
 
     def _get_train_valid_loader(self):
-        train_dataset = datasets.CIFAR10(
-            root=self.data_dir, train=True,
-            download=True, transform=self.train_transform,
-        )
+        if self.Cifar_type =="10":
+            train_dataset = datasets.CIFAR10(
+                root=self.data_dir, train=True,
+                download=True, transform=self.train_transform,
+            )
+        elif self.Cifar_type =="100":
+            train_dataset = datasets.CIFAR100(
+                root=self.data_dir, train=True,
+                download=True, transform=self.train_transform,
+            )
+        else:
+            print("Selection is out of range")
 
         num_train = len(train_dataset)
         indices = list(range(num_train))
@@ -87,10 +96,19 @@ class CIFAR10DataLoader:
         return train_loader, valid_loader
 
     def _get_test_loader(self):
-        dataset = datasets.CIFAR10(
+        if self.Cifar_type =="10":
+            dataset = datasets.CIFAR10(
             root=self.data_dir, train=False,
             download=True, transform=self.test_transform,
         )
+        elif self.Cifar_type =="100": 
+            dataset = datasets.CIFAR100(
+            root=self.data_dir, train=False,
+            download=True, transform=self.test_transform,
+        )
+        else:
+             print("Selection is out of range")
+
 
         data_loader = torch.utils.data.DataLoader(
             dataset, batch_size=self.batch_size, shuffle=self.shuffle
