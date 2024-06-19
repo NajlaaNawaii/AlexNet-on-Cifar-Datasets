@@ -7,8 +7,6 @@ This repository contains experiments adapting the AlexNet architecture for the C
 ### Experiment 1: Adapting AlexNet with Original ImageNet Augmentations
 We adapted AlexNet for CIFAR-10 and CIFAR-100 by adjusting kernel sizes to 3x3 and adding an adaptive average pooling layer for 32x32 image resolution. Original AlexNet augmentations (random cropping, horizontal flipping, PCA color augmentation) were used. However, the strong PCA augmentation and random cropping with padding led to unlearnable features and mostly black images, as shown in the figures below. This significantly affected training.
 
-![Adapted AlexNet With Original Augmentation on CIFAR-100](Images/Experiment_1.png)
-![Adapted AlexNet With Original Augmentation on CIFAR-10](Images/Experiment_1_10.png)
 
 ### Experiment 2: Refining PCA Color Augmentation
 We refined the PCA color augmentation by clipping pixel values and scaling down perturbation (alpha_std=0.1). Despite these changes, the images remained mostly unrecognizable, similar to Experiment 1.
@@ -16,19 +14,15 @@ We refined the PCA color augmentation by clipping pixel values and scaling down 
 ### Experiment 3: Baseline Training Without Augmentation
 We trained the model without any augmentation to establish a baseline. The model achieved high training accuracy (99.47%) but significant overfitting was evident from the low validation accuracy (62.96%) on CIFAR-100. CIFAR-10 showed similar trends with a training accuracy of 82.09% and validation accuracy of 83.53%.
 
-![Baseline Training Without Augmentation on CIFAR-100](Images/Experiment_3.png)
-![Baseline Training Without Augmentation on CIFAR-10](Images/Experiment_3_10.png)
+
 
 ### Experiment 4: Regularization using Basic Augmentation Techniques
 To address overfitting, we applied basic augmentation techniques (random horizontal flips, rotations, cropping, and color jitter). Despite these efforts, the model did not perform well, particularly on CIFAR-100. Training accuracies were 52.85% and 99.99%, and validation accuracies were 51.56% and 87.01% for CIFAR-100 and CIFAR-10 respectively.
 
-![Regularizing Baseline Model on CIFAR-100](Images/Experiment_4.png)
-![Regularizing Baseline Model on CIFAR-10](Images/Experiment_4_10.png)
 
 Another attempt using only horizontal flipping and rotation resulted in training accuracies of 70.69% and 90.41%, and validation accuracies of 51.92% and 83.42% for CIFAR-100 and CIFAR-10 respectively.
 
-![Regularizing Baseline Model on CIFAR-100](Images/Experiment_5.png)
-![Regularizing Baseline Model on CIFAR-10](Images/Experiment_5_10.png)
+
 
 ## Results Summary
 
