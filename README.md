@@ -9,7 +9,7 @@ This repository contains experiments adapting the AlexNet architecture for the C
 | Datasets | Top-1 Errors | Top-5 Errors | Accuracy |
 |----------|---------------|--------------|----------|
 |          | CutOut | MixUp | CutMix | CutOut | MixUp | CutMix | CutOut | MixUp | CutMix |
-| CIFAR-10 | 14.78% | 13.12% | 14.90% | 0.90% | 1.00% | 0.81% | 85.39% | 87.27% | 85.10% |
+| CIFAR-10 | 14.78% | 13.12% | 14.90% | 0.90% | 1.00% | 0.81% | 85.39% | 87.27% | 85.10% | 
 | CIFAR-100| 44.15% | 41.04% | 53.43% | 15.86% | 15.78% | 23.28% | 56.37% | 58.98% | 46.57% |
 
 *Table 2: Comparisons of MixUp, CutOut and CutMix error rates*
